@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- 这个不能用通用的,自定义控件影响的,原因不明-->
+    <size
+        android:width="50dp"
+        android:height="50dp" />
+    <stroke
+        android:width="0.5dp"
+        android:color="@color/global_purple" />
+    <solid android:color="@color/white_96p_transparent"/>
+</shape>

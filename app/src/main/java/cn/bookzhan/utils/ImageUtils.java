@@ -302,7 +302,7 @@ public class ImageUtils {
             // This offers some additional logic in case the image has a strange
             // aspect ratio. For example, a panorama may have a much larger
             // width than height. In these cases the total pixels might still
-            // end up being too large to fit comfortably in memory, so we should
+            // end up_arrows being too large to fit comfortably in memory, so we should
             // be more aggressive with sample down the image (=larger inSampleSize).
 
             long totalPixels = width * height / inSampleSize;

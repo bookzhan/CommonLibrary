@@ -60,7 +60,6 @@ public class CircleImageView extends ImageView {
 
 	@Override
 	public void draw(Canvas canvas) {
-
 		Bitmap bmpCache = null;
 		if (sr != null) {
 			bmpCache = sr.get();
@@ -81,6 +80,7 @@ public class CircleImageView extends ImageView {
 
 		Canvas canvas2 = new Canvas(bmpCache);
 		super.draw(canvas2);
+
 		drawLiftUp(canvas2);
 		drawRightUp(canvas2);
 		drawLiftDown(canvas2);

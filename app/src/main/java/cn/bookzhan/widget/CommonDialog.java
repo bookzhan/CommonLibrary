@@ -5,7 +5,9 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import cn.bookzhan.library.R;
+
 
 /**
  * Created by bookzhan on 2015/7/17.
@@ -44,7 +46,7 @@ public class CommonDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 dismiss();
-                if(leftButtonOnClickListener!=null){
+                if (leftButtonOnClickListener != null) {
                     leftButtonOnClickListener.onLeftButtonOnClick();
                 }
             }
@@ -53,7 +55,7 @@ public class CommonDialog extends Dialog {
             @Override
             public void onClick(View v) {
                 dismiss();
-                if(rightButtonOnClickListener!=null){
+                if (rightButtonOnClickListener != null) {
                     rightButtonOnClickListener.onRightButtonOnClick();
                 }
             }
@@ -67,6 +69,11 @@ public class CommonDialog extends Dialog {
      */
     public void setTitleMsg(String titleMsg) {
         tv_dialog_title.setText(titleMsg);
+        tv_dialog_title.setVisibility(View.VISIBLE);
+    }
+
+    public void hideTitle() {
+        tv_dialog_title.setVisibility(View.GONE);
     }
 
     /**
@@ -101,8 +108,8 @@ public class CommonDialog extends Dialog {
      */
     public void hideRightButton() {
         line_3.setVisibility(View.GONE);
+        bt_dialog_left.setBackgroundResource(R.drawable.selector_dialog_single);
         bt_dialog_right.setVisibility(View.GONE);
-        bt_dialog_left.setBackgroundResource(R.drawable.dialog_button_back_single);
     }
 
     /**
@@ -110,8 +117,8 @@ public class CommonDialog extends Dialog {
      */
     public void showRightButton() {
         line_3.setVisibility(View.VISIBLE);
+        bt_dialog_left.setBackgroundResource(R.drawable.selector_dialog_left);
         bt_dialog_right.setVisibility(View.VISIBLE);
-        bt_dialog_left.setBackgroundResource(R.drawable.dialog_button_back_left);
     }
 
     public interface RightButtonOnClickListener {
@@ -125,6 +132,7 @@ public class CommonDialog extends Dialog {
     /**
      * 设置右边按钮的点击监听,当右边按钮点击的时候就回调这个.
      * 不用调用 dismiss()已经调用过了
+     *
      * @param rightButtonOnClickListener
      */
     public void setOnRightButtonOnClick(RightButtonOnClickListener rightButtonOnClickListener) {
@@ -134,6 +142,7 @@ public class CommonDialog extends Dialog {
     /**
      * 设置左边按钮的点击监听,当左边按钮点击的时候就回调这个.
      * 不用调用 dismiss()已经调用过了
+     *
      * @param leftButtonOnClickListener
      */
     public void setOnLeftButtonOnClick(LeftButtonOnClickListener leftButtonOnClickListener) {

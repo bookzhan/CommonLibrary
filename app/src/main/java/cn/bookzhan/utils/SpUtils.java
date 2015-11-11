@@ -2,6 +2,7 @@ package cn.bookzhan.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import java.util.Map;
 
 /**
@@ -18,7 +19,7 @@ public class SpUtils {
     private SpUtils() {
     }
 
-    public static SpUtils getInstant() {
+    public static synchronized SpUtils getInstant() {
         if (spUtils == null) {
             spUtils = new SpUtils();
         }
@@ -51,7 +52,7 @@ public class SpUtils {
         } else {
             editor.putString(key, object.toString());
         }
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -92,7 +93,7 @@ public class SpUtils {
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.remove(key);
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -105,7 +106,7 @@ public class SpUtils {
                 Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.clear();
-        editor.commit();
+        editor.apply();
     }
 
     /**
@@ -123,6 +124,7 @@ public class SpUtils {
 
     /**
      * 返回所有的键值对
+     *
      * @param context
      * @return
      */

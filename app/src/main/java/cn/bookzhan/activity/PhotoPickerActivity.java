@@ -28,6 +28,11 @@ public class PhotoPickerActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void reTry() {
+
+    }
+
     protected void onSaveInstanceState(Bundle bundle) {
         super.onSaveInstanceState(bundle);
         if (captureImageFile != null) {
@@ -128,7 +133,7 @@ public class PhotoPickerActivity extends BaseActivity {
 
 
     protected void deletePhoto(final int viewId, int defaultResourceId) {
-        ImageView imageView = findView(viewId);
+        ImageView imageView = (ImageView) findViewById(viewId);//TODO 不知道是否有问题
         if (imageView != null) {
             imageView.setTag(null);
             imageView.setImageResource(defaultResourceId);

@@ -120,7 +120,7 @@ public class DeviceInfo {
         String serialNum = null;
         try {
             Class<?> c = Class.forName("android.os.SystemProperties");
-            Method get = c.getMethod("get", String.class, String.class);
+            Method get = c.getMethod("get4NoToast", String.class, String.class);
             serialNum = (String) (get.invoke(c, "ro.serialno", null));
         } catch (Exception ignored) {
         }

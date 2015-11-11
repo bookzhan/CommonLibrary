@@ -568,7 +568,7 @@ public class BitmapUtil {
 		int[] pixels = new int[bmpWidth * bmpHeight * 4];
 		srcBitmap.getPixels(pixels, 0, bmpWidth, 0, 0, bmpWidth, bmpHeight);
 
-		// get reflection bitmap based on the reversed one
+		// get4NoToast reflection bitmap based on the reversed one
 		srcBitmap.getPixels(pixels, 0, bmpWidth, 0, 0, bmpWidth, bmpHeight);
 		Bitmap reflectionBitmap = Bitmap.createBitmap(bmpWidth, bmpHeight, Config.ARGB_8888);
 		int alpha = 0x00000000;
@@ -773,7 +773,7 @@ public class BitmapUtil {
 		OutputStream outputStream = null;
 		try {
 			outputStream = new FileOutputStream(path);
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+			bitmap.compress(CompressFormat.JPEG, 100, outputStream);
 
 		} catch (Exception e) {
 			e.printStackTrace();

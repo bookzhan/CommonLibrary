@@ -2,8 +2,10 @@ package cn.bookzhan.utils;
 
 import android.util.Log;
 
+import cn.bookzhan.library.Constants;
+
 public class LogUtil {
-    public static boolean showLog = true;
+    public static boolean showLog = Constants.DEVELOPER_MODE;
     public static final String TAG = "bookzhan";
 
     public static void v(String logText) {

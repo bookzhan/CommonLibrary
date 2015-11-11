@@ -1,5 +1,7 @@
 package cn.bookzhan.model;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by zhandalin 2015年08月27日 17:30.
  * 最后修改者: zhandalin  version 1.0
@@ -7,16 +9,14 @@ package cn.bookzhan.model;
  */
 public class HomeBasesData {
     private String image;
+    @SerializedName("type")
     private int model;
     private String title;
-    private String type_id;
-    private String url;
-    private String content;
-    private String theme;
-    private String price;
-    private String start_time;
-    private String end_time;
-    private String discount;
+    @SerializedName("link")
+    private String id_or_url;
+
+    private long starttime;
+    private long endtime;
 
 
     public String getImage() {
@@ -43,67 +43,27 @@ public class HomeBasesData {
         this.title = title;
     }
 
-    public String getType_id() {
-        return type_id;
+    public String getId_or_url() {
+        return id_or_url;
     }
 
-    public void setType_id(String type_id) {
-        this.type_id = type_id;
+    public void setId_or_url(String id_or_url) {
+        this.id_or_url = id_or_url;
     }
 
-    public String getUrl() {
-        return url;
+    public long getStarttime() {
+        return starttime;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setStarttime(long starttime) {
+        this.starttime = starttime;
     }
 
-    public String getContent() {
-        return content;
+    public long getEndtime() {
+        return endtime;
     }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getTheme() {
-        return theme;
-    }
-
-    public void setTheme(String theme) {
-        this.theme = theme;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getStart_time() {
-        return start_time;
-    }
-
-    public void setStart_time(String start_time) {
-        this.start_time = start_time;
-    }
-
-    public String getEnd_time() {
-        return end_time;
-    }
-
-    public void setEnd_time(String end_time) {
-        this.end_time = end_time;
-    }
-
-    public String getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(String discount) {
-        this.discount = discount;
+    public void setEndtime(long endtime) {
+        this.endtime = endtime;
     }
 }

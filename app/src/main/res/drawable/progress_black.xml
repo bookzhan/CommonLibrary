@@ -2,35 +2,10 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <rotate
-            android:drawable="@drawable/shap_circle_upload_inter"
-            android:fromDegrees="0"
-            android:pivotX="50%"
-            android:pivotY="50%"
-            android:toDegrees="780" />
+            android:drawable="@mipmap/ghs_loading"
+            android:fromDegrees="360"
+            android:toDegrees="0" />
     </item>
-    <item>
-        <rotate
-            android:drawable="@drawable/shap_circle_upload_inter_red"
-            android:fromDegrees="90"
-            android:pivotX="50%"
-            android:pivotY="50%"
-            android:toDegrees="870" />
-    </item>
-    <item>
-        <rotate
-            android:drawable="@drawable/shap_circle_upload_inter_green"
-            android:fromDegrees="180"
-            android:pivotX="50%"
-            android:pivotY="50%"
-            android:toDegrees="960" />
-    </item>
-    <item>
-        <rotate
-            android:drawable="@drawable/shap_circle_upload_inter_blue"
-            android:fromDegrees="270"
-            android:pivotX="50%"
-            android:pivotY="50%"
-            android:toDegrees="1050" />
-    </item>
+
 
 </layer-list>

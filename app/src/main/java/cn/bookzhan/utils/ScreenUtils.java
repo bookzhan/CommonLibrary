@@ -3,19 +3,10 @@ package cn.bookzhan.utils;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
-import android.view.Display;
+import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 public class ScreenUtils {
-    public static int getStatusBarHeight(Context context) {
-        int result = 0;
-        Resources resources = context.getResources();
-        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = resources.getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
 
 
     public static int getStatusBarHeightUseConstant(Context context) {
@@ -32,12 +23,33 @@ public class ScreenUtils {
         return result;
     }
 
+    /**
+     * @param context
+     * @return 返回的只是可以展示类容的高度
+     */
     public static Point getScreenSize(Context context) {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = windowManager.getDefaultDisplay();
+        DisplayMetrics dm = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(dm);
         Point size = new Point();
-        size.x=display.getWidth();
-        size.y=display.getHeight();
+        size.x = dm.widthPixels;
+        size.y = dm.heightPixels - getStatusBarHeight(context);
         return size;
     }
+
+    /**
+     * 计算系统状态栏高度
+     *
+     * @return
+     */
+    public static int getStatusBarHeight(Context context) {
+        int result = 0;
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = context.getResources().getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+
 }

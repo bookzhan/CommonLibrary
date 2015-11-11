@@ -50,4 +50,22 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+    <style name="main_menu_animstyle">
+        <item name="android:windowExitAnimation">@anim/dialog_exit_anim</item>
+        <item name="android:windowEnterAnimation">@anim/dialog_enter_anim</item>
+    </style>
+    <style name="ad_dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <!-- popwidnow 显示消失动画-->
+    <style name="mypopwindow_anim_style">
+        <item name="android:windowEnterAnimation">@anim/remote_popup_anim_in</item>
+        <item name="android:windowExitAnimation">@anim/remote_popup_anim_out</item>
+
+    </style>
+
 </resources>

@@ -1,49 +1,81 @@
 package cn.bookzhan.bases;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable;
+import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
-import com.google.gson.Gson;
+
 import com.umeng.analytics.MobclickAgent;
-import java.util.List;
+
+import cn.bookzhan.library.Constants;
 import cn.bookzhan.library.R;
-import cn.bookzhan.utils.FileUtils;
+import cn.bookzhan.utils.DensityUtil;
+import cn.bookzhan.utils.SpUtils;
+import cn.bookzhan.utils.StringUtil;
+import cn.bookzhan.widget.LoadingProgressDialog;
+import cn.bookzhan.widget.MessageDialog;
 
 
-public class BaseActivity extends Activity {
-    private static final String TAG = "BaseActivity";
-    private Toast mToast;
-    protected boolean isDestroyed = false;
+public abstract class BaseActivity extends FragmentActivity {
+    protected boolean isDestroyed;
     protected Context context;
-    protected ProgressDialog loadingProgress;
+    protected LoadingProgressDialog loadingProgress;
+    protected MessageDialog msgDialog;
+    public View rootView;
+    public View errorView;
+    private View currentView;
+    private Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         context = this;
         isDestroyed = false;
+    }
+    protected void initRootAndErrorView(int rootViewId,int errorViewId){
+       rootView= LayoutInflater.from(this).inflate(rootViewId,null);
+        errorView=LayoutInflater.from(this).inflate(errorViewId,null);
+        errorView.findViewById(R.id.bt_to_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reTry();
+            }
+        });
+    }
+    protected abstract void reTry();
+    protected void initRootView(int rootViewId){
+        rootView=LayoutInflater.from(this).inflate(rootViewId,null);
+    }
+
+    @Override
+    public void setContentView(View view) {
+           // if(currentView==view)return;
+            if(view==null)return;//从onFalure 进来,view 可能为null
+            if (currentView != null) {
+                if (view == currentView) return;
+                currentView = view;
+            } else {
+                currentView = view;
+            }
+       // currentView=view;
+        super.setContentView(view);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-//        BaseApplication application = (BaseApplication) this.getApplication();
-//        if (application.wasInBackground) {
-//            application.applicationWillEnterForeground();
-//        }
-//
-//        // Android 4.0以下的方案
-//        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-//            application.stopActivityTransitionTimer();
-//        }
         //umeng统计开始
         MobclickAgent.onResume(this);
     }
@@ -51,171 +83,60 @@ public class BaseActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-//        // Android 4.0以下的方案
-//        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-//            ((BaseApplication) this.getApplication())
-//                    .startActivityTransitionTimer();
-//        }
-        //umeng统计时常结束
+        hiddenDialogMsg();
+        //umeng统计结束
         MobclickAgent.onPause(this);
     }
 
     @Override
     protected void onDestroy() {
         isDestroyed = true;
-        if (mToast != null) {
-            mToast.cancel();
+        if (loadingProgress != null && loadingProgress.isShowing()) {
+            loadingProgress.dismiss();
+        }
+        if (msgDialog != null && msgDialog.isShowing()) {
+            msgDialog.dismiss();
         }
         super.onDestroy();
     }
 
-    protected void goBack(View v) {
-        finish();
-    }
-
-    public <T extends View> T findView(int resId) {
-        View v = findViewById(resId);
-        if (v == null) return null;
-        return (T) v;
-    }
-
     /**
-     * 读取文本数据
-     * @param fileName 文件名
-     * @return String, 读取到的文本内容，失败返回null
-     */
-    public String readFile(String fileName) {
-        return FileUtils.readFile(getApplicationContext(), fileName);
-    }
-
-    /**
-     * 存储文本数据，一般用作网络数据的硬盘缓存
+     * 很久才会弹一个Toast,不提升为成员变量
      *
-     * @param fileName 文件名，要在系统内保持唯一
-     * @param content  文本内容
-     * @return boolean 存储成功的标志
+     * @param message 传null则默认显示为 网络或服务器错误
      */
-    public boolean writeFile(String fileName, String content) {
-        return FileUtils.writeFile(getApplicationContext(), fileName, content);
-    }
-
-    /**
-     * 读取数据对象数组
-     * 已废弃，请使用：readListFromJsonFile
-     *
-     * @param fileName 文件名
-     * @param classOfT 对象类别，例如Order.class
-     * @return List, 读取到的数据对象数组，失败返回null
-     */
-    @Deprecated
-    public <T extends Parcelable> List<T> readParcelableList(String fileName, Class<T> classOfT) {
-        return FileUtils.readParcelableList(getApplicationContext(), fileName, classOfT);
-    }
-
-    /**
-     * 读取数据对象
-     * 已废弃，请使用：readObjectFromJsonFile
-     *
-     * @param fileName 文件名
-     * @param classOfT 对象类别，例如Order.class
-     * @return List, 读取到的数据对象数组，失败返回null
-     */
-    @Deprecated
-    public <T extends Parcelable> T readParcelable(String fileName, Class<T> classOfT) {
-        return FileUtils.readParcelable(getApplicationContext(), fileName, classOfT);
-    }
-
-    /**
-     * 存储文本数据，一般用作网络数据的硬盘缓存
-     * 已废弃，请使用：writeListToJsonFile
-     *
-     * @param fileName 文件名，要在系统内保持唯一
-     * @param list     数组对象，对象需要实现Parcelable接口
-     * @return boolean 存储成功的标志
-     */
-    @Deprecated
-    public <T extends Parcelable> boolean writeParcelableList(String fileName, List<T> list) {
-        return FileUtils.writeParcelableList(getApplicationContext(), fileName, list);
-    }
-
-    /**
-     * 存储文本数据，一般用作网络数据的硬盘缓存
-     * 已废弃，请使用：writeObjectToJsonFile
-     *
-     * @param fileName     文件名，要在系统内保持唯一
-     * @param parcelObject 实现了Parcelable接口的对象
-     * @return boolean 存储成功的标志
-     */
-    @Deprecated
-    public <T extends Parcelable> boolean writeParcelable(String fileName, T parcelObject) {
-        return FileUtils.writeParcelable(getApplicationContext(), fileName, parcelObject);
-    }
-
-    /**
-     * 读取数据对象
-     *
-     * @param fileName 文件名
-     * @param classOfT 对象类别，例如Order.class
-     * @return T, 读取到的POJO对象，失败返回null
-     */
-    public <T> T readObjectFromJsonFile(String fileName, Class<T> classOfT) {
-        return FileUtils.readObjectFromJsonFile(context, fileName, classOfT);
-    }
-
-    /**
-     * 存储文本数据，一般用作网络数据的硬盘缓存
-     *
-     * @param fileName 文件名，要在系统内保持唯一
-     * @param list     数组对象，包含任意的POJO对象
-     * @return boolean 存储成功的标志
-     */
-    public boolean writeListToJsonFile(String fileName, List list) {
-        return FileUtils.writeListToJsonFile(context, fileName, list);
-    }
-
-    /**
-     * 存储文本数据，一般用作网络数据的硬盘缓存
-     *
-     * @param fileName 文件名，要在系统内保持唯一
-     * @param object   任意POJO对象
-     * @return boolean 存储成功的标志
-     */
-    public boolean writeObjectToJsonFile(String fileName, Object object) {
-        return FileUtils.writeObjectToJsonFile(context, fileName, new Gson().toJson(object));
-    }
-
-    /**
-     * 显示Toast消息
-     *
-     * @param message
-     */
-    public void showToast(String message) {
-        this.showToast(message, Gravity.CENTER);
-    }
-
-    /**
-     * 显示Toast消息
-     *
-     * @param messageResourceID
-     */
-    public void showToast(int messageResourceID) {
-        showToast(getString(messageResourceID), Gravity.CENTER);
-    }
-
-    public void showToast(String message, int gravity) {
+    public void showToastAtCenter(String message) {
         if (isDestroyed) {
             return;
         }
-
-        hiddenKeyboard();
-
-        if (mToast == null) {
-            mToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
+        if (null == message) {
+            message = "网络或服务器错误~";
         }
-        mToast.setGravity(gravity, 0, 0);
-        mToast.setText(message);
+        hiddenKeyboard();
+        Toast mToast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        mToast.setMargin(0, 0);
+        View view = mToast.getView();
+        view.setBackgroundResource(R.drawable.shape_large_corner_rectangle);
+        TextView tv = (TextView) view.findViewById(android.R.id.message);
+        tv.setTextColor(Color.WHITE);
+        mToast.setGravity(Gravity.CENTER, 0, 0);
         mToast.show();
     }
+
+    public void showToastAtBottom(String message) {
+        if (isDestroyed) {
+            return;
+        }
+        hiddenKeyboard();
+        Toast mToast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
+        mToast.setMargin(0, 0);
+        View view = mToast.getView();
+        view.setBackgroundResource(R.drawable.shape_large_corner_rectangle);
+        TextView tv = (TextView) view.findViewById(android.R.id.message);
+        tv.setTextColor(Color.WHITE);
+        mToast.show();
+    }
+
 
     public void hiddenKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -233,7 +154,7 @@ public class BaseActivity extends Activity {
      * 显示"加载中"对话框
      */
     public void showLoading() {
-        showLoading(getString(R.string.bases_activity_loading_info));
+        showLoading(null, true, true);
     }
 
     /**
@@ -243,7 +164,7 @@ public class BaseActivity extends Activity {
      * @return
      */
     public void showLoading(int messageID) {
-        showLoading(null, getString(messageID));
+        showLoading(getString(messageID));
     }
 
     /**
@@ -253,61 +174,135 @@ public class BaseActivity extends Activity {
      * @return
      */
     public void showLoading(String message) {
-        showLoading(null, message);
+        showLoading(message, true, true);
     }
 
     /**
      * 显示加载中对话框
      *
-     * @param titleID
-     * @param messageID 默认为“加载中...”
-     * @return
+     * @param message              默认为“加载中...”
+     * @param cancelable           设置进度条是否可以按退回键取消
+     * @param canceledTouchOutside 设置点击进度对话框外的区域对话框不消失
      */
-    public void showLoading(int titleID, int messageID) {
-        showLoading(getString(titleID), getString(messageID));
-    }
-
-    /**
-     * 显示加载中对话框
-     *
-     * @param title
-     * @param message 默认为“加载中...”
-     * @return
-     */
-    public void showLoading(String title, String message) {
-        if (message == null) {
-            message = getString(R.string.bases_activity_loading_info);
-        }
+    public void showLoading(String message, boolean cancelable, boolean canceledTouchOutside) {
+        //由于于要调用hiddenLoadingView,会把loadingProgress置空,所以是不影响的,而且这样也能保证只显示一个
         if (loadingProgress == null) {
-            loadingProgress = new ProgressDialog(this);
-            loadingProgress.setTitle(title);
-            loadingProgress.setMessage(message);
-            loadingProgress.show();
-            loadingProgress.setCancelable(true);// 设置进度条是否可以按退回键取消
-            // 设置点击进度对话框外的区域对话框不消失
-            loadingProgress.setCanceledOnTouchOutside(false);
+            loadingProgress = new LoadingProgressDialog(this);
         }
+        if (message != null) {
+            loadingProgress.setMessage(message);
+        }
+        loadingProgress.setCancelable(cancelable);
+        loadingProgress.setCanceledOnTouchOutside(canceledTouchOutside);
+        loadingProgress.show();
     }
 
-    /**
-     * 延迟结束自己
-     */
-    public void finishAfterDelay(long delayMillis) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                finish();
-            }
-        }, delayMillis);
-    }
 
     /**
      * 隐藏加载框
      */
     public void hiddenLoadingView() {
-        if (loadingProgress != null) {
-            loadingProgress.dismiss();
-            loadingProgress = null;
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (loadingProgress != null && loadingProgress.isShowing()) {
+                    loadingProgress.dismiss();
+                    loadingProgress = null;
+                }
+            }
+        }, 800);
+    }
+
+    /**
+     * 显示dialog风格的Toast
+     *
+     * @param message
+     */
+    public void showDialogMsg(String message) {
+        msgDialog = new MessageDialog(this);
+        if (message != null) {
+            msgDialog.setMessage(message);
+        }
+        msgDialog.setCancelable(true);
+        msgDialog.setCanceledOnTouchOutside(true);
+        msgDialog.show();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hiddenDialogMsg();
+            }
+        }, 1500);
+    }
+
+    public void showDialogMsgAtBottom(String message) {
+        msgDialog = new MessageDialog(this);
+        if (message != null) {
+            msgDialog.setMessage(message);
+        }
+        msgDialog.setCancelable(true);
+        msgDialog.setCanceledOnTouchOutside(true);
+        Window dialogWindow = msgDialog.getWindow();
+        dialogWindow.setGravity(Gravity.CENTER | Gravity.BOTTOM);
+        WindowManager.LayoutParams attributes = dialogWindow.getAttributes();
+        attributes.y = DensityUtil.dip2px(context, 100);
+        dialogWindow.setAttributes(attributes);
+        msgDialog.show();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                hiddenDialogMsg();
+            }
+        }, 1500);
+    }
+
+
+    /**
+     * 隐藏dialog风格的Toast
+     */
+    public void hiddenDialogMsg() {
+        if (null != msgDialog && msgDialog.isShowing()) {
+            msgDialog.dismiss();
+            msgDialog = null;
         }
     }
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (KeyEvent.KEYCODE_BACK == keyCode) {
+            finish();
+            overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+
+    @Override
+    public void startActivity(Intent intent) {
+
+        super.startActivity(intent);
+        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
+        super.startActivityForResult(intent, requestCode, options);
+        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+    }
+
+
+    public void startActivityNoAnimation(Intent intent) {
+        super.startActivity(intent);
+    }
+
+    public boolean isLogin() {
+        if (StringUtil.isEmpty((String) SpUtils.getInstant().get(context, Constants.USER_ID, ""))) {
+            return false;
+        }
+        return true;
+    }
+
+
 }

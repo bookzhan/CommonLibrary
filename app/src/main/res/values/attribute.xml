@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="leftText" format="string" />
+    <attr name="rightText" format="string" />
+    <attr name="title" format="string" />
+    <attr name="jumpClass" format="string" />
+    <attr name="needPadding" format="boolean" />
+
+    <declare-styleable name="ViewPager">
+        <attr name="orientation">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <attr name="text" format="string" />
+
+    <declare-styleable name="StrokeColorImageView">
+        <attr name="radius" format="dimension" />
+        <attr name="stroke_color" format="color" />
+        <attr name="bg_color" format="color" />
+    </declare-styleable>
+
+</resources>

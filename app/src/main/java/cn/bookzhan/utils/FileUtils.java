@@ -18,6 +18,9 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -137,7 +140,9 @@ public class FileUtils {
                 fis.close();
                 arrayOutputStream.close();
                 content = new String(arrayOutputStream.toByteArray());
-
+                if(content.contains("null")){//当服务器返回的数据为null时，写入到文件中的值为null,下一次到这里会取出空值
+                    content=null;
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -415,7 +420,26 @@ public class FileUtils {
 
         return results;
     }
+    /**
+     * 读取数据对象
+     *
+     * @param fileName
+     *            文件名
+     * @param classOfT
+     *            对象类别，例如Order.class
+     * @return T, 读取到的POJO对象，失败返回null
+     */
+    public static <T> T readObjectFromJsonFile(Context context, String fileName, Class<T> classOfT)
+    {
+        T object = null;
+        String content = readFile(context, fileName);
+        if (content != null && content.trim().length() > 0)
+        {
+            object = new Gson().fromJson(content, classOfT);
+        }
 
+        return object;
+    }
 
     /**
      * 读取数据对象
@@ -424,14 +448,36 @@ public class FileUtils {
      * @param classOfT 对象类别，例如Order.class
      * @return T, 读取到的POJO对象，失败返回null
      */
-    public static <T> T readObjectFromJsonFile(Context context, String fileName, Class<T> classOfT) {
-        T object = null;
+    public static <T> List<T> readListFromJsonFile(Context context, String fileName, Class<T> classOfT) {
+        List<T> object = null;
         String content = readFile(context, fileName);
         if (content != null && content.trim().length() > 0) {
-            object = new Gson().fromJson(content, classOfT);
+            object = listFromJson(content, classOfT);
+        }
+        return object;
+    }
+    public static <T> List<T> listFromJson(String json, Class<T> classOfT) {
+        return new Gson().fromJson(json, new GenericType(classOfT));
+    }
+
+    private static class GenericType implements ParameterizedType {
+        private Class itemClazz;
+
+        public GenericType(Class itemClazz) {
+            this.itemClazz = itemClazz;
         }
 
-        return object;
+        public Type[] getActualTypeArguments() {
+            return new Type[]{itemClazz};
+        }
+
+        public Type getRawType() {
+            return ArrayList.class;
+        }
+
+        public Type getOwnerType() {
+            return null;
+        }
     }
 
     /**

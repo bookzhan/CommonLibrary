@@ -13,4 +13,13 @@
     <string name="xlistview_footer_hint_normal">查看更多</string>
     <string name="xlistview_footer_hint_ready">松开载入更多</string>
 
+    <string name="continue_watch">继续观看</string>
+    <string name="warm_tip">温馨提示</string>
+    <string name="wram_tip_message">观看视频会消耗较多流量，建议在wifi环境下继续观看</string>
+
+    <string name="drm_error_not_supported">Protected content not supported on API levels below 18</string>
+    <string name="drm_error_unsupported_scheme">This device does not support the required DRM scheme</string>
+    <string name="drm_error_unknown">An unknown DRM error occurred</string>
+
+
 </resources>

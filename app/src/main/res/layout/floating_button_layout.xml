@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_page_navigation"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_corner_stroke_circle_55"
+    android:clickable="true">
+
+    <ImageView
+        android:id="@+id/iv_up_arrows"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:padding="10dp"
+        android:src="@mipmap/up_arrows"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/ll_page_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_page_index"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:gravity="center"
+            android:textColor="@color/global_purple"
+            android:textSize="16sp"
+            tools:text="6" />
+
+        <View
+            android:layout_width="50dp"
+            android:layout_height="0.5dp"
+            android:background="@color/global_purple" />
+
+        <TextView
+            android:id="@+id/tv_total_page"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center"
+            android:textColor="@color/global_purple"
+            android:textSize="16sp"
+            tools:text="390" />
+    </LinearLayout>
+
+
+</FrameLayout>

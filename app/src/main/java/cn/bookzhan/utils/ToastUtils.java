@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import cn.bookzhan.library.R;
 
+
 /**
  * 自定义Toast
  * Created by zhandalin on 2015/6/18.
@@ -24,7 +25,7 @@ public class ToastUtils {
 
     public static void showSuccessToast(Context context, String content) {
         View toastRoot = View.inflate(context, R.layout.myfavorite_toast, null);
-        TextView tv = (TextView) toastRoot.findViewById(R.id.TextViewInfo);
+        TextView tv = (TextView) toastRoot.findViewById(R.id.tv_msg);
         tv.setText(content);
         Toast toast = new Toast(context);
         toast.setGravity(Gravity.CENTER, 0, 0);
@@ -42,6 +43,7 @@ public class ToastUtils {
         if (toast == null) {
             toast = Toast.makeText(context, content, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.getView().setBackgroundResource(R.drawable.shape_large_corner_rectangle);
             toast.show();
             oneTime = SystemClock.elapsedRealtime();
         } else {
