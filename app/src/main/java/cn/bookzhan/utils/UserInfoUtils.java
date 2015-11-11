@@ -14,10 +14,7 @@ import cn.bookzhan.model.UserInfo;
 public class UserInfoUtils {
 
     public static boolean isLogin(Context context) {
-        if (StringUtil.isEmpty((String) SpUtils.getInstant().get(context, Constants.USER_ID, ""))) {
-            return false;
-        }
-        return true;
+        return !StringUtil.isEmpty((String) SpUtils.getInstant().get(context, Constants.USER_ID, ""));
     }
 
     public static String getUserId(Context context) {

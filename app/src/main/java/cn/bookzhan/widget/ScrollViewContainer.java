@@ -209,11 +209,8 @@ public class ScrollViewContainer extends RelativeLayout {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             ScrollView sv = (ScrollView) v;
-            if (sv.getScrollY() == (sv.getChildAt(0).getMeasuredHeight() - sv
-                    .getMeasuredHeight()) && mCurrentViewIndex == 0)
-                canPullUp = true;
-            else
-                canPullUp = false;
+            canPullUp = sv.getScrollY() == (sv.getChildAt(0).getMeasuredHeight() - sv
+                    .getMeasuredHeight()) && mCurrentViewIndex == 0;
             return false;
         }
     };
